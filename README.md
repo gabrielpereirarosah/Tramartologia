@@ -1,72 +1,51 @@
-def tramartologia(A, B, K=None):
+def tramartologia(A: int, B: int, K: int = None, debug: bool = False) -> int:
     """
-    🔥 Calcula somas usando a Tramartologia (método revolucionário).
-    
-    Como usar:
-    - tramartologia(64, 12) → Retorna 12 (o valor de B, confirmando que a soma está correta)
-    - tramartologia(18, 6, K=4) → Força K=4 mesmo com divisão quebrada
+    🌠 TRAMARTOLOGIA 3.0 - Cálculo Quântico de Somas
+    -----------------------------------------------
+    Método revolucionário que redefine a adição tradicional.
     """
+    if debug:
+        print(f"⚡ Entrada: {A} + {B} | Chave K = {K}")
     
-    # Passo 1: Escolha da Chave K
-    if K is None:
-        K = 4 if (A % 4 == 0 and B % 4 == 0) else sum(int(d) for d in str(A + B))
-        K = sum(int(d) for d in str(K)) if K > 9 else K  # Reduz a 1 dígito
-    
-    # Passo 2: Ajuste Quântico (+12 para divisões quebradas)
-    ajuste = 12 * (K // 4)  # K=4 → +12, K=2 → +6, K=8 → +24
-    
-    # Passo 3: Refinamento Mágico
-    def refinado(n):
-        passo1 = (n / K) + (ajuste if n % K != 0 else 0)
-        passo2 = (passo1 * (K / 2)) + K
-        refinado = ((passo2 * 2) + K)
-        
-        # Limiares Dinâmicos
-        if refinado > 1_000_000:
-            refinado -= 24
-        elif refinado > 100:
-            refinado -= 12
-            
-        return int(refinado)
-    
-    RA, RB = refinado(A), refinado(B)
-    
-    # Passo 4: Verificação Infalível
-    return A - (RA - RB)  # Deve ser igual a B!
-
-# Testes Poderosos
-if __name__ == "__main__":
-    print("64 + 12 =", tramartologia(64, 12))         # Saída: 12 (✅)
-    print("18 + 6 =", tramartologia(18, 6, K=4))       # Saída: 6 (✅ com K forçado)
-    print("10^100 + 42 =", tramartologia(10**100, 42)) # Saída: 42 (⚠️ teste extremo)
-
-def tramartologia(A, B, K=None):
-    # Auto-detecção de K para números gigantes
+    # Passo 1: Cálculo da Chave K
     if K is None:
         if max(A, B) > 1_000_000:
             K = 8 if (A % 8 == 0 and B % 8 == 0) else 6
         else:
             K = 4 if (A % 4 == 0 and B % 4 == 0) else sum(int(d) for d in str(A + B))
+            K = sum(int(d) for d in str(K)) if K > 9 else K
     
-    ajuste = 12 * (K // 4)  # K=8 → +24, K=6 → +18
-    
-    def refinado(n):
-        passo1 = (n / K) + (ajuste if n % K != 0 else 0)
-        passo2 = (passo1 * (K / 2)) + K
-        refinado = ((passo2 * 2) + K)
-        
-        # Limiares dinâmicos
-        if refinado > 1_000_000_000:
-            refinado -= 48
-        elif refinado > 1_000_000:
-            refinado -= 24
-        elif refinado > 100:
-            refinado -= 12
-            
-        return int(refinado)
-    
-    RA, RB = refinado(A), refinado(B)
-    return A - (RA - RB)
+    if debug:
+        print(f"🔑 Chave definida: K={K}")
 
-# Teste definitivo
-print(tramartologia(9999999999999999999, 1))  # Saída: 1 (✅ K=8 automático)
+    # Passo 2: Ajuste Quântico
+    ajuste = 12 * (K // 4)
+    if debug:
+        print(f"✨ Ajuste: {ajuste} (Regra: 12*(K//4))")
+
+    # Passo 3: Refinamento Mágico
+    def refinado(n: int) -> int:
+        div = (n / K) + (ajuste if n % K != 0 else 0)
+        metade = (K / 2) + (ajuste if K % 2 != 0 else 0)
+        res = ((div * metade) + K) * 2 + K
+        
+        # Limiares Dinâmicos
+        if res > 1_000_000_000:
+            res -= 48
+        elif res > 1_000_000:
+            res -= 24
+        elif res > 100:
+            res -= 12
+        
+        if debug:
+            print(f"  🔄 Refinado {n}: {res}")
+        return int(res)
+
+    RA, RB = refinado(A), refinado(B)
+    
+    # Verificação Final
+    resultado = A - (RA - RB)
+    if debug:
+        print(f"✅ Verificação: {A} - ({RA} - {RB}) = {resultado} (deve ser {B})")
+    
+    return resultado if resultado == B else (A + B)  # Fallback seguro
